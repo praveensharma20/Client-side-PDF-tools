@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure PDF Studio — Your PDFs Never Leave Your Browser</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- PDF Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+    <script src="lib/pdf.js"></script>
+    
+    <!-- Your CSS file -->
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="font-['Inter']">
+    
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full bg-white bg-opacity-10 backdrop-blur-md z-50 border-b border-white border-opacity-20">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="text-2xl font-bold text-white tracking-tight">PDF<span class="text-blue-300">Studio</span></div>
+            <div class="hidden md:flex space-x-8 text-white">
+                <a href="#workspace" class="hover:text-blue-300 transition">Workspace</a>
+                <a href="#features" class="hover:text-blue-300 transition">Features</a>
+                <a href="#privacy" class="hover:text-blue-300 transition">Privacy</a>
+                <a href="https://github.com/" class="hover:text-blue-300 transition" target="_blank" rel="noreferrer">GitHub</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section min-h-screen flex items-center justify-center px-6 pt-20">
+        <div class="max-w-4xl mx-auto text-center">
+            <div class="glass-card p-12">
+                <h1 class="text-5xl md:text-6xl font-extrabold mb-6 text-white leading-tight">
+                    Your PDFs never leave your browser.
+                    <br><span class="gradient-text">Secure tools. Zero signups.</span>
+                </h1>
+                <p class="text-xl text-gray-200 mb-8">
+                    Merge, split, compress, and watermark PDFs — 100% client-side, free, and open source.
+                </p>
+
+                <!-- File Drop Zone -->
+                <div id="dropZone" class="drop-zone">
+                    <svg class="w-16 h-16 mx-auto mb-4 text-white opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                    </svg>
+                    <p class="text-white text-lg mb-2 font-semibold">Drop PDFs here or click to browse</p>
+                    <p class="text-sm text-gray-200">Process files instantly — nothing is uploaded.</p>
+                    <input type="file" id="fileInput" multiple accept=".pdf,.png,.jpg,.jpeg" class="hidden">
+                </div>
+
+                <!-- Security Badges -->
+                <div class="flex justify-center gap-6 mt-8 flex-wrap">
+                    <span class="badge">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                        </svg>
+                        100% client-side
+                    </span>
+                    <span class="badge">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                        </svg>
+                        Zero signups
+                    </span>
+                    <span class="badge">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+                        </svg>
+                        Free & open source
+                    </span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Workspace -->
+    <section id="workspace" class="py-20 px-6 bg-slate-950 text-white">
+        <div class="container mx-auto max-w-6xl">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div class="lg:col-span-2 glass-card">
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="text-2xl font-bold">Workspace</h2>
+                        <span id="statusChip" class="status-chip">Ready</span>
+                    </div>
+
+                    <div class="flex flex-wrap gap-3 mb-6">
+                        <button id="btnMerge" class="pill-btn">Merge PDFs</button>
+                        <button id="btnSplit" class="pill-btn">Split PDF</button>
+                        <button id="btnCompress" class="pill-btn">Compress PDF</button>
+                        <button id="btnWatermark" class="pill-btn">Add Watermark</button>
+                        <button id="btnPdfText" class="pill-btn">PDF → Text</button>
+                        <button id="btnPdfImages" class="pill-btn">PDF → Images</button>
+                        <button id="btnImagesPdf" class="pill-btn">Images → PDF</button>
+                        <button id="btnReorder" class="pill-btn">Reorder Pages</button>
+                        <button id="btnPageNumbers" class="pill-btn">Add Page Numbers</button>
+                        <button id="btnFlatten" class="pill-btn">Flatten Forms</button>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="panel">
+                            <div class="panel-header">
+                                <h3 class="panel-title">Files</h3>
+                                <button id="btnReset" class="text-sm text-blue-200 hover:text-blue-100">Clear</button>
+                            </div>
+                            <ul id="fileList" class="file-list">
+                                <li class="empty">No PDFs loaded yet</li>
+                            </ul>
+                        </div>
+
+                        <div class="panel">
+                            <div class="panel-header">
+                                <h3 class="panel-title">Options</h3>
+                                <div class="text-xs text-gray-300">Adjust per tool and run instantly.</div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="splitInput">Split pages</label>
+                                <input id="splitInput" type="text" class="input" placeholder="1,3,5-8">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="reorderInput">Reorder pages</label>
+                                <input id="reorderInput" type="text" class="input" placeholder="e.g. 3,1,2 or 1-3,5">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="pageNumberStart">Page numbers start at</label>
+                                <input id="pageNumberStart" type="number" min="1" value="1" class="input">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="exportFormat">Export format</label>
+                                <select id="exportFormat" class="input">
+                                    <option value="text">Text (.txt)</option>
+                                    <option value="markdown">Markdown (.md)</option>
+                                    <option value="html">HTML (.html)</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="compressInput">Compression level</label>
+                                <input id="compressInput" type="range" min="0" max="9" step="1" value="3" class="range">
+                                <div class="text-sm text-gray-300"><span id="compressValue">3</span> (higher = smaller file)</div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="watermarkInput">Watermark text</label>
+                                <input id="watermarkInput" type="text" class="input" placeholder="Confidential • Do not share">
+                            </div>
+
+                            <button id="btnRun" class="primary-btn w-full mt-2">Run selected tool</button>
+                        </div>
+                    </div>
+
+                    <div id="statusMessage" class="status-box mt-4">Drop files to get started. All processing stays in your browser.</div>
+                </div>
+
+                <div class="glass-card">
+                    <h3 class="text-xl font-semibold mb-3">Why this tool?</h3>
+                    <ul class="stacked-list">
+                        <li>Client-side only — PDFs never leave your device.</li>
+                        <li>No accounts, ads, or tracking pixels.</li>
+                        <li>Built with PDF.js & PDF-lib; open source under MIT.</li>
+                        <li>Works offline after first load.</li>
+                        <li>Fast — WebAssembly-backed parsing and writing.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="py-20 px-6">
+        <div class="container mx-auto max-w-6xl">
+            <h2 class="text-4xl font-bold text-center mb-12 text-white">Powerful PDF Tools</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Merge Card -->
+                <div class="feature-card" data-action="merge">
+                    <svg class="w-12 h-12 mb-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                    <h3 class="text-xl font-semibold mb-2 text-white">Merge PDFs</h3>
+                    <p class="text-gray-300">Combine multiple PDFs into one document</p>
+                </div>
+
+                <!-- Split Card -->
+                <div class="feature-card" data-action="split">
+                    <svg class="w-12 h-12 mb-4 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path>
+                    </svg>
+                    <h3 class="text-xl font-semibold mb-2 text-white">Split PDF</h3>
+                    <p class="text-gray-300">Extract specific pages or ranges</p>
+                </div>
+
+                <!-- Compress Card -->
+                <div class="feature-card" data-action="compress">
+                    <svg class="w-12 h-12 mb-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                    </svg>
+                    <h3 class="text-xl font-semibold mb-2 text-white">Compress PDF</h3>
+                    <p class="text-gray-300">Reduce file size for easy sharing</p>
+                </div>
+
+                <!-- Watermark Card -->
+                <div class="feature-card" data-action="watermark">
+                    <svg class="w-12 h-12 mb-4 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"></path>
+                    </svg>
+                    <h3 class="text-xl font-semibold mb-2 text-white">Add Watermark</h3>
+                    <p class="text-gray-300">Add text or image watermarks</p>
+                </div>
+
+                <!-- PDF to Text/Markdown/HTML -->
+                <div class="feature-card" data-action="pdfText">
+                    <svg class="w-12 h-12 mb-4 text-indigo-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 20h9"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4l9 4-9 4-9-4 9-4z"></path>
+                    </svg>
+                    <h3 class="text-xl font-semibold mb-2 text-white">PDF → Text/MD/HTML</h3>
+                    <p class="text-gray-300">Export editable content locally</p>
+                </div>
+
+                <!-- PDF to Images -->
+                <div class="feature-card" data-action="pdfImages">
+                    <svg class="w-12 h-12 mb-4 text-cyan-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-8h6a2 2 0 012 2v6"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h6M4 6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M4 6V4a2 2 0 012-2h10a2 2 0 012 2v4"></path>
+                    </svg>
+                    <h3 class="text-xl font-semibold mb-2 text-white">PDF → Images</h3>
+                    <p class="text-gray-300">Save each page as PNG</p>
+                </div>
+
+                <!-- Images to PDF -->
+                <div class="feature-card" data-action="imagesPdf">
+                    <svg class="w-12 h-12 mb-4 text-emerald-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M10 14h10M4 14h2m-2 4h16"></path>
+                    </svg>
+                    <h3 class="text-xl font-semibold mb-2 text-white">Images → PDF</h3>
+                    <p class="text-gray-300">Combine JPG/PNG into a PDF</p>
+                </div>
+
+                <!-- Reorder Pages -->
+                <div class="feature-card" data-action="reorder">
+                    <svg class="w-12 h-12 mb-4 text-orange-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m-7 8h12a2 2 0 002-2V8.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0011.586 2H5a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                    </svg>
+                    <h3 class="text-xl font-semibold mb-2 text-white">Reorder Pages</h3>
+                    <p class="text-gray-300">Set any custom page order</p>
+                </div>
+
+                <!-- Page Numbers -->
+                <div class="feature-card" data-action="pageNumbers">
+                    <svg class="w-12 h-12 mb-4 text-lime-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-6l-2 2m4 0l2-2v6m4-3h2m-6 0h2m-6 0H7"></path>
+                    </svg>
+                    <h3 class="text-xl font-semibold mb-2 text-white">Add Page Numbers</h3>
+                    <p class="text-gray-300">Number pages with a start offset</p>
+                </div>
+
+                <!-- Flatten Forms -->
+                <div class="feature-card" data-action="flatten">
+                    <svg class="w-12 h-12 mb-4 text-rose-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h10m-6 4h12M4 18h8"></path>
+                    </svg>
+                    <h3 class="text-xl font-semibold mb-2 text-white">Flatten Forms</h3>
+                    <p class="text-gray-300">Make form fields non-editable</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Privacy Section -->
+    <section id="privacy" class="py-20 px-6">
+        <div class="container mx-auto max-w-4xl text-center">
+            <div class="glass-card p-12">
+                <svg class="w-20 h-20 mx-auto mb-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                </svg>
+                <h2 class="text-4xl font-bold mb-6 text-white">Your Privacy is Our Priority</h2>
+                <p class="text-xl text-gray-200 mb-6">
+                    All PDF processing happens directly in your browser. Your files never touch our servers.
+                </p>
+                <p class="text-lg text-gray-300">
+                    No tracking. No data collection. No cloud storage. Just pure, client-side processing using WebAssembly and modern JavaScript.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-8 px-6 border-t border-white border-opacity-10">
+        <div class="container mx-auto text-center text-gray-300">
+            <p>Built with ❤️ using PDF.js & PDF-lib | 100% Open Source</p>
+        </div>
+    </footer>
+
+    <!-- Your JavaScript files -->
+    <script src="js/pdf-viewer.js"></script>
+    <script src="js/pdf-operations.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
